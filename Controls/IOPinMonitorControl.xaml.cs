@@ -38,8 +38,13 @@ namespace EzIIOLibControl.Controls
             set => SetValue(IsOutputProperty, value);
         }
 
-        public event EventHandler<string> PinClicked;
+        // New property to hold the device manager
+        public MultiDeviceManager DeviceManager { get; set; }
 
+        // New property to hold the device name
+        public string DeviceName { get; set; }
+
+        public event EventHandler<(string DeviceName, string PinName)> PinClicked;
         public IOPinMonitorControl()
         {
             InitializeComponent();
@@ -49,7 +54,22 @@ namespace EzIIOLibControl.Controls
         {
             if (sender is Button button && button.Tag is string pinName)
             {
-                PinClicked?.Invoke(this, pinName);
+                try
+                {
+                    // If DeviceManager is set, toggle the output
+                    if (DeviceManager != null && !string.IsNullOrEmpty(DeviceName))
+                    {
+                        DeviceManager.ToggleOutput(DeviceName, pinName);
+                    }
+
+                    // Raise the event with device name and pin name
+                    PinClicked?.Invoke(this, (DeviceName, pinName));
+                }
+                catch (Exception ex)
+                {
+                    // Optional: Add error handling
+                    MessageBox.Show($"Error toggling pin: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }
