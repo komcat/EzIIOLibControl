@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="EzIIOLibControl.Controls.PneumaticSlideControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EzIIOLibControl.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:BooleanToBrushConverter x:Key="BoolToColorConverter"/>
+        <local:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        <Style x:Key="SlideButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <Style x:Key="SensorIndicatorStyle" TargetType="Ellipse">
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="SensorLabelStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=UserControl}}"
+         FontSize="20" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <Button x:Name="refreshButton" Content="Refresh Slides" 
+                    Width="120" HorizontalAlignment="Left" Click="RefreshButton_Click"/>
+        </StackPanel>
+
+        <!-- Slides List -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="slidesItemsControl" 
+              ItemsSource="{Binding Slides, RelativeSource={RelativeSource AncestorType=UserControl}}">
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="#CCCCCC" BorderThickness="1" 
+                                Margin="0,5" Padding="10" CornerRadius="3">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Slide Name and Position -->
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding Name}" 
+                                             FontWeight="SemiBold" FontSize="14"/>
+                                    <TextBlock Text="{Binding Position}"
+                                             Foreground="#666666" Margin="0,5,0,0"/>
+                                </StackPanel>
+
+                                <!-- Control Buttons -->
+                                <Button Grid.Column="1" Content="Extend" 
+                                        Style="{StaticResource SlideButtonStyle}"
+                                        Click="ExtendButton_Click"
+                                        Tag="{Binding Name}"
+                                        IsEnabled="{Binding IsMoving, Converter={StaticResource InverseBoolConverter}}"/>
+
+                                <Button Grid.Column="2" Content="Retract"
+                                        Style="{StaticResource SlideButtonStyle}"
+                                        Click="RetractButton_Click"
+                                        Tag="{Binding Name}"
+                                        IsEnabled="{Binding IsMoving, Converter={StaticResource InverseBoolConverter}}"/>
+
+                                <!-- Sensor Status -->
+                                <StackPanel Grid.Row="1" Grid.ColumnSpan="4" 
+                                          Orientation="Horizontal" Margin="0,10,0,0">
+                                   
+                                    <TextBlock Text="Retracted Sensor:" 
+                                             Style="{StaticResource SensorLabelStyle}"/>
+                                    <Ellipse Style="{StaticResource SensorIndicatorStyle}"
+                                             Fill="{Binding RetractedSensorActive, 
+                                                    Converter={StaticResource BoolToColorConverter}}"/>
+                                    <TextBlock Text="Extended Sensor:" 
+                                            Style="{StaticResource SensorLabelStyle}"/>
+                                    <Ellipse Style="{StaticResource SensorIndicatorStyle}"
+                                             Fill="{Binding ExtendedSensorActive, 
+                                                    Converter={StaticResource BoolToColorConverter}}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Event Log -->
+        <!--<GroupBox Grid.Row="2" Header="Event Log" Margin="0,10,0,0">
+            <ListBox x:Name="eventLogListBox" 
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        </GroupBox>-->
+    </Grid>
+</UserControl>
