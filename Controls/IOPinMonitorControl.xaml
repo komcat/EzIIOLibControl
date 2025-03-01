@@ -57,26 +57,26 @@
                   ItemsSource="{Binding PinsSource, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="5,5,5,5" Grid.RowSpan="2">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Pin" Width="50">
+                    <GridViewColumn Header="Pin" Width="30">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding PinNumber}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Name" Width="200">
+                    <GridViewColumn Header="Name" Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="State" Width="100">
+                    <GridViewColumn Header="State" Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <!-- Output Pin Button (Visible when IsOutput is True) -->
-                                    <Button Width="60" Height="25" 
+                                    <Button Width="50" Height="25" 
                         Tag="{Binding Name}"
                         Click="OutputPin_Click">
                                         <Button.Style>
